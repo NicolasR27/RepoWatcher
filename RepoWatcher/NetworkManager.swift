@@ -17,7 +17,7 @@ class NetworkManager {
         
     }
     
-    func getRepo(atURL urlString: String) async throws -> Respository {
+    func getRepo(atURL urlString: String) async throws -> Repository {
         guard let url = URL(string: urlString) else {
             throw NetworkError.invalidURL
             }
@@ -29,7 +29,7 @@ class NetworkManager {
         }
         
         do{
-            return try decoder.decode(Respository.self,from: data)
+            return try decoder.decode(Repository.self,from: data)
         } catch {
             throw NetworkError.invalidRepoData
         }

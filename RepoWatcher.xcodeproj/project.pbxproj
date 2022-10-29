@@ -18,9 +18,9 @@
 		3E73D35A290911AE002763FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E73D359290911AE002763FE /* Assets.xcassets */; };
 		3E73D35E290911AE002763FE /* RepoWatcherWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3E73D34E290911AC002763FE /* RepoWatcherWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3E73D36429091259002763FE /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D36329091259002763FE /* Repository.swift */; };
-		3E73D36529091259002763FE /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D36329091259002763FE /* Repository.swift */; };
 		3E73D3672909126D002763FE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D3662909126D002763FE /* NetworkManager.swift */; };
-		3E73D3682909126D002763FE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D3662909126D002763FE /* NetworkManager.swift */; };
+		3E73D369290CF2FA002763FE /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D36329091259002763FE /* Repository.swift */; };
+		3E73D36A290CF2FF002763FE /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73D3662909126D002763FE /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				3E73D33C29091184002763FE /* RepoWatcherApp.swift */,
+				3E73D3662909126D002763FE /* NetworkManager.swift */,
+				3E73D36329091259002763FE /* Repository.swift */,
 				3E73D33E29091184002763FE /* ContentView.swift */,
 				3E73D34029091185002763FE /* Assets.xcassets */,
 				3E73D34229091185002763FE /* Preview Content */,
@@ -136,8 +138,6 @@
 			children = (
 				3E73D355290911AC002763FE /* RepoWatcherWidgetBundle.swift */,
 				3E73D357290911AC002763FE /* RepoWatcherWidget.swift */,
-				3E73D36329091259002763FE /* Repository.swift */,
-				3E73D3662909126D002763FE /* NetworkManager.swift */,
 				3E73D359290911AE002763FE /* Assets.xcassets */,
 				3E73D35B290911AE002763FE /* Info.plist */,
 			);
@@ -256,10 +256,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E73D3682909126D002763FE /* NetworkManager.swift in Sources */,
+				3E73D36A290CF2FF002763FE /* NetworkManager.swift in Sources */,
 				3E73D358290911AC002763FE /* RepoWatcherWidget.swift in Sources */,
 				3E73D356290911AC002763FE /* RepoWatcherWidgetBundle.swift in Sources */,
-				3E73D36529091259002763FE /* Repository.swift in Sources */,
+				3E73D369290CF2FA002763FE /* Repository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,11 +10,11 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> RepoEntry {
-        RepoEntry(date: Date(),repo: Respository.placeholder,avatarImageData: Data())
+        RepoEntry(date: Date(),repo: Repository.placeholder,avatarImageData: Data())
     }
     
     func getSnapshot(in context: Context, completion: @escaping (RepoEntry) -> ()) {
-        let entry = RepoEntry(date: Date(),repo: Respository.placeholder,avatarImageData: Data())
+        let entry = RepoEntry(date: Date(),repo: Repository.placeholder,avatarImageData: Data())
         completion(entry)
     }
     
@@ -39,7 +39,7 @@ struct Provider: TimelineProvider {
 
 struct RepoEntry: TimelineEntry {
     let date: Date
-    let repo: Respository
+    let repo: Repository
     let avatarImageData: Data
 }
 
@@ -116,7 +116,7 @@ struct RepoWatcherWidget: Widget {
 
 struct RepoWatcherWidget_Previews: PreviewProvider {
     static var previews: some View {
-        RepoWatcherWidgetEntryView(entry: RepoEntry(date: Date(), repo: Respository.placeholder,avatarImageData: Data()))
+        RepoWatcherWidgetEntryView(entry: RepoEntry(date: Date(), repo: Repository.placeholder,avatarImageData: Data()))
             .previewContext(WidgetPreviewContext(family: .systemMedium))
     }
 }
