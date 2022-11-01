@@ -58,7 +58,7 @@ struct RepoWatcherWidgetEntryView : View {
                         .resizable()
                         .frame(width: 50,height: 50)
                         .clipShape(Circle())
-                        
+                    
                     Text(entry.repo.name)
                         .font(.title2)
                         .minimumScaleFactor(0.6)
@@ -70,9 +70,11 @@ struct RepoWatcherWidgetEntryView : View {
                 HStack {
                     statsLabel(value:entry.repo.watchers, systemImageName: "star.fill")
                     statsLabel(value:entry.repo.forks, systemImageName: "tuningfork")
-                    statsLabel(value:entry.repo.openIssues , systemImageName: "exclamationmark.triangle.fill")
+                    if entry.repo.hasIssues {
+                        statsLabel(value:entry.repo.openIssues , systemImageName: "exclamationmark.triangle.fill")
+                    }
+                    
                 }
-                
             }
             
             Spacer()
