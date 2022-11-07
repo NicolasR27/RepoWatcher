@@ -1,107 +1,82 @@
-//
-//  RepoWatcherWidget.swift
-//  RepoWatcherWidget
-//
-//  Created by Nicolas Rios on 10/25/22.
-//
 
 import WidgetKit
 import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> RepoEntry {
-        RepoEntry(date: Date(),repo: Repository.placeholder,avatarImageData: Data())
+        RepoEntry(date: Date(),repo: MockData.RepoOne, bottomRepo: MockData.RepoTwo)
     }
     
     func getSnapshot(in context: Context, completion: @escaping (RepoEntry) -> ()) {
-        let entry = RepoEntry(date: Date(),repo: Repository.placeholder,avatarImageData: Data())
+        let entry = RepoEntry(date: Date(),repo: MockData.RepoOne, bottomRepo: MockData.RepoTwo)
         completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         
-            Task {
-                let nextUpdate = Date().addingTimeInterval(43200) // 12 hours in seconds
-
-                do {
-                    let repo = try await NetworkManager.shared.getRepo(atURL: RepoURL.swiftNew)
-                    let avatarImageData = await NetworkManager.shared.downloadImageData(from: repo.owner.avatarUrl)
-                    let entry = RepoEntry(date: .now, repo: repo, avatarImageData: avatarImageData ?? Data())
-                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-                    completion(timeline)
-                } catch {
-                    print("❌ Error - \(error.localizedDescription)")
+        Task {
+            let nextUpdate = Date().addingTimeInterval(43200) 
+            
+            do {
+               
+                var repo = try await NetworkManager.shared.getRepo(atURL: RepoURL.swiftNews)
+                let avatarImageData = await NetworkManager.shared.downloadImageData(from: repo.owner.avatarUrl)
+                repo.avatarData = avatarImageData ?? Data()
+                
+                var bottomRepo: Repository?
+                
+                if context.family == .systemLarge {
+                    var repo = try await NetworkManager.shared.getRepo(atURL: RepoURL.publish)
+                    let avatarImageData = await NetworkManager.shared.downloadImageData(from: bottomRepo!.owner.avatarUrl)
+                    bottomRepo!.avatarData = avatarImageData ?? Data()
+                    
                 }
+                
+                let entry = RepoEntry(date: .now, repo: repo, bottomRepo: bottomRepo)
+                let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+                completion(timeline)
+            } catch {
+                print("❌ Error - \(error.localizedDescription)")
             }
         }
     }
+}
 
 
 struct RepoEntry: TimelineEntry {
     let date: Date
     let repo: Repository
-    let avatarImageData: Data
+    let bottomRepo: Repository?
+    
 }
 
 struct RepoWatcherWidgetEntryView : View {
+    @Environment(\.widgetFamily) var family
     var entry: RepoEntry
-    let formatter = ISO8601DateFormatter()
-    var daysSinceLastAtivity: Int {
-        calculateDaysSinceLastActivity(from: entry.repo.pushedAt)
-    }
+    
     
     var body: some View {
-        HStack {
-            VStack(alignment:.leading) {
-                HStack {
-                    Image(uiImage: UIImage(data: entry.avatarImageData) ?? UIImage(named: "avatar")!)
-                        .resizable()
-                        .frame(width: 50,height: 50)
-                        .clipShape(Circle())
-                    
-                    Text(entry.repo.name)
-                        .font(.title2)
-                        .minimumScaleFactor(0.6)
-                        .lineLimit(1)
-                    
-                }
-                .padding(.bottom,6)
-                
-                HStack {
-                    statsLabel(value:entry.repo.watchers, systemImageName: "star.fill")
-                    statsLabel(value:entry.repo.forks, systemImageName: "tuningfork")
-                    if entry.repo.hasIssues {
-                        statsLabel(value:entry.repo.openIssues , systemImageName: "exclamationmark.triangle.fill")
+        switch family {
+            case.systemMedium:
+                RepoMediumView(repo: entry.repo)
+            case.systemLarge:
+                VStack(spacing: 36) {
+                    RepoMediumView(repo: entry.repo)
+                    if let bottomRepo = entry.bottomRepo {
+                        RepoMediumView(repo: bottomRepo)
                     }
-                    
+                   
                 }
-            }
-            
-            Spacer()
-            
-            VStack {
-                Text("\(daysSinceLastAtivity)")
-                    .bold()
-                    .font(.system(size:70))
-                    .frame(width: 90)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                    .foregroundColor(daysSinceLastAtivity > 50 ? .pink: .green)
+            case.systemSmall,.systemExtraLarge,.accessoryCircular,.accessoryRectangular,.accessoryInline:
+                EmptyView()
+            @unknown default:
+                EmptyView()
                 
-                Text("days ago")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
         }
-        .padding()
-    }
-    
-    func calculateDaysSinceLastActivity(from dateString:String) -> Int{
-        let LastActivityDate = formatter.date(from: dateString) ?? .now
-        let daysSinceLastActivity = Calendar.current.dateComponents([.day],from: LastActivityDate,to: .now).day ?? 0
-        return daysSinceLastActivity
+        
     }
 }
+
 
 struct RepoWatcherWidget: Widget {
     let kind: String = "RepoWatcherWidget"
@@ -112,31 +87,21 @@ struct RepoWatcherWidget: Widget {
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
-        .supportedFamilies([.systemMedium])
+        .supportedFamilies([.systemMedium,.systemLarge])
     }
 }
 
 struct RepoWatcherWidget_Previews: PreviewProvider {
     static var previews: some View {
-        RepoWatcherWidgetEntryView(entry: RepoEntry(date: Date(), repo: Repository.placeholder,avatarImageData: Data()))
-            .previewContext(WidgetPreviewContext(family: .systemMedium))
+        RepoWatcherWidgetEntryView(entry: RepoEntry(date: Date(),
+                                                    repo: MockData.RepoOne,
+                                                    bottomRepo: MockData.RepoTwo))
+                                                    
+                                
+        .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
 
-fileprivate struct statsLabel: View {
-    let value: Int
-    let systemImageName: String
-    
-    var body: some View {
-        Label {
-            Text("\(value)")
-                .font(.footnote)
-        } icon: {
-            Image(systemName: systemImageName)
-                .foregroundStyle(.green)
-        }
-        .fontWeight(.medium)
-    }
-}
+
 
 

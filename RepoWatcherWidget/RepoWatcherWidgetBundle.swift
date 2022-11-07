@@ -1,9 +1,3 @@
-//
-//  RepoWatcherWidgetBundle.swift
-//  RepoWatcherWidget
-//
-//  Created by Nicolas Rios on 10/25/22.
-//
 
 import WidgetKit
 import SwiftUI
