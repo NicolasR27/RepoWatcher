@@ -1,9 +1,3 @@
-//
-//  MockData.swift
-//  RepoWatcherWidgetExtension
-//
-//  Created by Nicolas Rios on 11/6/22.
-//
 
 import Foundation
 
